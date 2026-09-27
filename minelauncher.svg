@@ -1,0 +1,1744 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="rootSvg" width="100%" height="100%" viewBox="0 0 1200 283">
+  <foreignObject id="fo" x="0" y="0" width="1200" height="283">
+    <iframe xmlns="http://www.w3.org/1999/xhtml"
+      id="mainFrame"
+      srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;script&gt;(function () {
+  ['pushState', 'replaceState'].forEach(function (method) {
+    var original = history[method];
+    history[method] = function () {
+      try { return original.apply(history, arguments); } catch (e) { /* opaque origin, ignore */ }
+    };
+  });
+})();&lt;/script&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+&lt;title&gt;Minecraft Version Launcher&lt;/title&gt;
+
+&lt;style&gt;
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    color-scheme: dark;
+    --bg: #1b1a1a;
+    --panel: #211f1f;
+    --panel-hover: #292626;
+    --border: #3c3835;
+    --text: #e8e1d7;
+    --muted: #9b958d;
+    --accent: #c9b187;
+    --accent-hover: #dec79e;
+    --green: #91ad7e;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    min-height: 100vh;
+    overflow: hidden;
+    color: var(--text);
+    font-family: Georgia, &quot;Times New Roman&quot;, serif;
+
+    background:
+        radial-gradient(
+            circle at 12% 18%,
+            rgba(255,255,255,.035),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 84% 14%,
+            rgba(255,255,255,.025),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 45% 100%,
+            rgba(0,0,0,.38),
+            transparent 48%
+        ),
+        #1b1a1a;
+}
+
+body::before {
+    content: &quot;&quot;;
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .45;
+
+    background:
+        radial-gradient(
+            circle at 20% 30%,
+            rgba(255,255,255,.025) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 70% 70%,
+            rgba(0,0,0,.15) 0 2px,
+            transparent 3px
+        );
+
+    background-size: 37px 41px, 53px 47px;
+    mix-blend-mode: overlay;
+}
+
+/* =========================================================
+   APP
+   ========================================================= */
+
+.app {
+    position: relative;
+    z-index: 1;
+
+    width: min(1050px, 94vw);
+    height: 100vh;
+
+    margin: auto;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 48px 0 22px;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header {
+    text-align: center;
+    margin-bottom: 23px;
+}
+
+h1 {
+    margin: 0;
+
+    color: #e5ded4;
+
+    font-size: clamp(36px, 7vw, 68px);
+    font-weight: 400;
+    letter-spacing: 9px;
+
+    text-shadow:
+        0 2px 0 #0e0e0e,
+        0 5px 20px rgba(0,0,0,.6);
+}
+
+.subtitle {
+    margin-top: 7px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+
+.controls {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        190px;
+
+    gap: 10px;
+
+    margin-bottom: 11px;
+}
+
+.search {
+    width: 100%;
+    height: 46px;
+
+    padding: 0 17px;
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+
+    outline: none;
+
+    background: #211f1f;
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 15px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.02),
+        0 7px 20px rgba(0,0,0,.16);
+}
+
+.search::placeholder {
+    color: #77716a;
+}
+
+.search:focus {
+    border-color: #63594c;
+
+    box-shadow:
+        0 0 0 2px rgba(199,176,138,.05),
+        0 7px 20px rgba(0,0,0,.22);
+}
+
+#filter {
+    width: 100%;
+    height: 46px;
+
+    padding: 0 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+
+    outline: none;
+
+    background: #211f1f;
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+#filter:focus {
+    border-color: #63594c;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+#status {
+    min-height: 20px;
+
+    margin: 3px 2px 9px;
+
+    color: var(--muted);
+
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: .3px;
+}
+
+#status.success {
+    color: var(--green);
+}
+
+#status.error {
+    color: #bd7777;
+}
+
+/* =========================================================
+   LIST
+   ========================================================= */
+
+#versionList {
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+
+    padding-right: 5px;
+
+    scrollbar-width: thin;
+    scrollbar-color: #4c4742 transparent;
+}
+
+#versionList::-webkit-scrollbar {
+    width: 7px;
+}
+
+#versionList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#versionList::-webkit-scrollbar-thumb {
+    background: #49443f;
+    border-radius: 10px;
+}
+
+/* =========================================================
+   CATEGORY HEADER
+   ========================================================= */
+
+.category-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+
+    margin: 12px 0 7px;
+    padding: 7px 10px;
+
+    background: rgba(27,26,26,.94);
+
+    border-bottom: 1px solid #373330;
+
+    color: #bcb3a7;
+
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    backdrop-filter: blur(8px);
+}
+
+/* =========================================================
+   VERSION ROW
+   ========================================================= */
+
+.version-row {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    min-height: 62px;
+
+    margin-bottom: 7px;
+
+    padding:
+        9px
+        10px
+        9px
+        16px;
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.018),
+            transparent
+        ),
+        var(--panel);
+
+    box-shadow:
+        0 5px 16px rgba(0,0,0,.14);
+
+    transition:
+        background .15s,
+        border-color .15s,
+        transform .15s;
+}
+
+.version-row:hover {
+    background: var(--panel-hover);
+    border-color: #504a45;
+    transform: translateX(2px);
+}
+
+.version-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.version-name {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: var(--text);
+    font-size: 16px;
+}
+
+.version-meta {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 5px;
+
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+}
+
+.meta {
+    padding: 3px 6px;
+
+    border: 1px solid #45413d;
+    border-radius: 3px;
+
+    color: #aaa39a;
+    background: rgba(255,255,255,.015);
+
+    letter-spacing: .5px;
+}
+
+.meta.wasm {
+    color: #a8bd99;
+    border-color: #4f6049;
+}
+
+.meta.html {
+    color: #9eb0bd;
+    border-color: #46545e;
+}
+
+.meta.zip {
+    color: #c0a982;
+    border-color: #5b503d;
+}
+
+.meta.get {
+    color: #a89db4;
+    border-color: #504958;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.actions {
+    display: flex;
+    gap: 7px;
+    flex-shrink: 0;
+}
+
+button {
+    min-height: 34px;
+
+    padding: 7px 11px;
+
+    border: 1px solid #45403b;
+    border-radius: 4px;
+
+    cursor: pointer;
+
+    background: #2a2725;
+    color: #d8d1c7;
+
+    font-family: inherit;
+    font-size: 12px;
+
+    transition:
+        background .15s,
+        border-color .15s,
+        color .15s;
+}
+
+button:hover {
+    background: #35302c;
+    border-color: #62594f;
+    color: white;
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+.play-btn {
+    color: #d9c39d;
+}
+
+.blank-btn {
+    color: #aaa39a;
+}
+
+/* =========================================================
+   EMPTY / LOADING
+   ========================================================= */
+
+.loading,
+.empty {
+    padding: 45px 15px;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+    flex-shrink: 0;
+
+    padding-top: 12px;
+
+    text-align: center;
+
+    color: #67625c;
+
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .app {
+        width: 94vw;
+        padding-top: 40px;
+    }
+
+    .controls {
+        grid-template-columns: 1fr;
+    }
+
+    .version-row {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .version-info {
+        width: calc(100% - 10px);
+    }
+
+    .actions {
+        width: 100%;
+    }
+
+    .actions button {
+        flex: 1;
+    }
+}
+&lt;/style&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+&lt;main class=&quot;app&quot;&gt;
+
+&lt;header&gt;
+    &lt;h1&gt;MINECRAFT&lt;/h1&gt;
+
+    &lt;div class=&quot;subtitle&quot;&gt;
+        Version Launcher
+    &lt;/div&gt;
+&lt;/header&gt;
+
+&lt;div class=&quot;controls&quot;&gt;
+
+    &lt;input id=&quot;search&quot; class=&quot;search&quot; type=&quot;search&quot; autocomplete=&quot;off&quot; spellcheck=&quot;false&quot; placeholder=&quot;Search versions...&quot;&gt;
+
+    &lt;select id=&quot;filter&quot;&gt;
+        &lt;option value=&quot;all&quot;&gt;All Versions&lt;/option&gt;
+        &lt;option value=&quot;release&quot;&gt;Release&lt;/option&gt;
+        &lt;option value=&quot;beta&quot;&gt;Beta&lt;/option&gt;
+        &lt;option value=&quot;alpha&quot;&gt;Alpha / Pre-Classic&lt;/option&gt;
+        &lt;option value=&quot;classic&quot;&gt;Classic&lt;/option&gt;
+        &lt;option value=&quot;preclassic&quot;&gt;Pre-Classic&lt;/option&gt;
+        &lt;option value=&quot;custom&quot;&gt;Custom Clients&lt;/option&gt;
+    &lt;/select&gt;
+
+&lt;/div&gt;
+
+&lt;div id=&quot;status&quot;&gt;
+    Loading version list...
+&lt;/div&gt;
+
+&lt;section id=&quot;versionList&quot;&gt;
+    &lt;div class=&quot;loading&quot;&gt;
+        Loading...
+    &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;footer&gt;
+    jsDelivr • IndexedDB local cache • Live version.txt
+&lt;/footer&gt;
+
+&lt;/main&gt;
+
+&lt;script&gt;
+&quot;use strict&quot;;
+
+/* =========================================================
+   CONFIG
+   ========================================================= */
+
+const USERNAME = &quot;accountname291203&quot;;
+const REPO = &quot;minecraftvers&quot;;
+const BRANCH = &quot;main&quot;;
+
+const CDN_BASE =
+    `https://cdn.jsdelivr.net/gh/${USERNAME}/${REPO}@${BRANCH}`;
+
+const VERSION_URL =
+    `${CDN_BASE}/version.txt`;
+
+
+/* =========================================================
+   FALLBACK
+   ========================================================= */
+
+const FALLBACK_VERSIONS = [
+    &quot;26.2-wasm&quot;,
+    &quot;26.1.2-wasm&quot;,
+    &quot;1.20.6-wasm&quot;,
+    &quot;1.21.11-wasm&quot;,
+    &quot;1.17.1-wasm&quot;,
+    &quot;1.16.5-wasm&quot;,
+    &quot;1.16.5&quot;,
+    &quot;1.14.4-wasm&quot;,
+    &quot;1.14.4&quot;,
+    &quot;1.13.2-wasm&quot;,
+    &quot;1.13.2&quot;,
+    &quot;1.12.2-wasm&quot;,
+    &quot;1.12.2&quot;,
+    &quot;1.8.8-wasm&quot;,
+    &quot;1.8.8&quot;,
+    &quot;1.7.10-wasm&quot;,
+    &quot;1.7.10&quot;,
+    &quot;1.6.4&quot;,
+    &quot;1.5.2&quot;,
+    &quot;1.4.7-wasm&quot;,
+    &quot;1.4.7&quot;,
+    &quot;1.3.2-wasm&quot;,
+    &quot;1.2.5-wasm&quot;,
+    &quot;1.2.5&quot;,
+    &quot;1.2.3-wasm&quot;,
+    &quot;1.2.3&quot;,
+    &quot;1.1&quot;,
+    &quot;1.0&quot;,
+
+    &quot;Beta 1.9 Pre 5-wasm&quot;,
+    &quot;Beta 1.9 Pre 5&quot;,
+    &quot;Beta 1.8.1-wasm&quot;,
+    &quot;Beta 1.8.1&quot;,
+    &quot;Beta 1.7.3&quot;,
+    &quot;Beta 1.6.4&quot;,
+    &quot;Beta 1.5&quot;,
+    &quot;Beta 1.4&quot;,
+    &quot;Beta 1.3-wasm&quot;,
+    &quot;Beta 1.3&quot;,
+    &quot;Beta 1.2&quot;,
+    &quot;Beta 1.1&quot;,
+    &quot;Beta 1.0.2-wasm&quot;,
+    &quot;Beta 1.0&quot;,
+
+    &quot;Alpha 1.2.6&quot;,
+    &quot;Alpha 1.1.2_01&quot;,
+    &quot;Alpha 1.0.16_02-wasm&quot;,
+    &quot;Alpha 1.0.6_03&quot;,
+    &quot;Alpha 1.0.4&quot;,
+    &quot;Alpha 1.0.1_01&quot;,
+
+    &quot;Infdev-wasm&quot;,
+
+    &quot;Indev 20100223&quot;,
+    &quot;Indev 20100219&quot;,
+    &quot;Indev&quot;,
+
+    &quot;4K&quot;,
+
+    &quot;Classic 0.3.0-wasm&quot;,
+    &quot;Classic 0.0.25a_05-wasm&quot;,
+    &quot;Classic 0.0.24a_03-wasm&quot;,
+    &quot;Classic 0.0.23a_01-wasm&quot;,
+    &quot;Classic 0.0.22a_05-wasm&quot;,
+    &quot;Classic 0.0.21a-wasm&quot;,
+    &quot;Classic 0.0.20a_02-wasm&quot;,
+    &quot;Classic 0.0.19a_06-wasm&quot;,
+    &quot;Classic 0.0.18a_02-wasm&quot;,
+    &quot;Classic 0.0.17a-wasm&quot;,
+    &quot;Classic 0.0.16a_02-wasm&quot;,
+    &quot;Classic 0.0.15a-wasm&quot;,
+    &quot;Classic 0.0.14a_08-wasm&quot;,
+    &quot;Classic 0.0.13a_03-wasm&quot;,
+    &quot;Classic 0.0.12a_03-wasm&quot;,
+    &quot;Classic 0.0.11a-wasm&quot;,
+
+    &quot;Pre-Classic RD-161348-wasm&quot;,
+    &quot;Pre-Classic RD-160052-wasm&quot;,
+    &quot;Pre-Classic RD-132328-wasm&quot;,
+    &quot;Pre-Classic RD-132211-wasm&quot;,
+    &quot;Pre-Classic RD-131655-wasm&quot;,
+
+    &quot;GX-Client (1.8.8-u53)&quot;,
+    &quot;EB Client (1.14.4 u1)&quot;,
+    &quot;EB Client (1.8.8 u53)&quot;,
+    &quot;Areo Client (1.12.2-u2)&quot;,
+    &quot;Myven Client (1.8.8-u53)&quot;,
+    &quot;Precision Client (1.8.8 u53)&quot;,
+    &quot;Huzzium Client (1.8.8 u53)&quot;,
+    &quot;Reflex Client (1.8.8 u53)&quot;,
+    &quot;Kozmo Client (1.12.2 u2)&quot;,
+    &quot;Tuff Client (1.12.2-u2)&quot;,
+    &quot;Tuff Client Beta 1.12.2&quot;,
+    &quot;EB Client OG(1.8.8 u53)&quot;,
+    &quot;Eclipse Client (1.8.8-u53)&quot;,
+    &quot;Pixel Client (1.12.2-u2)&quot;,
+    &quot;EFI (1.12.2-u2)&quot;,
+    &quot;EFI (1.8.8-u53)&quot;,
+    &quot;Astra Client (1.8.8-u53)&quot;,
+    &quot;Astra Client 2 (1.8.8-u53)&quot;,
+    &quot;Resent Client (1.8.8-u53)&quot;,
+    &quot;Eaglerforge (1.8.8-u31)&quot;,
+    &quot;Larp CLient 1.14.4&quot;,
+    &quot;Larp CLient 1.12.2&quot;,
+    &quot;Forge 1.6.4&quot;,
+    &quot;Modern Client (1.12.2-u2)-wasm&quot;,
+    &quot;The Broken Script 1.8.8&quot;,
+    &quot;Shadow Network&quot;
+];
+
+let VERSIONS = [];
+
+
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const searchInput =
+    document.getElementById(&quot;search&quot;);
+
+const filterSelect =
+    document.getElementById(&quot;filter&quot;);
+
+const versionList =
+    document.getElementById(&quot;versionList&quot;);
+
+const statusEl =
+    document.getElementById(&quot;status&quot;);
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+function setStatus(message, type = &quot;&quot;) {
+    statusEl.textContent = message;
+    statusEl.className = type;
+}
+
+
+/* =========================================================
+   VERSION PARSER
+   ========================================================= */
+
+function cleanVersionList(text) {
+    return text
+        .split(/\r?\n/)
+        .map(line =&gt; line.trim())
+        .filter(line =&gt; line.length &gt; 0)
+        .filter(line =&gt; !line.startsWith(&quot;#&quot;));
+}
+
+
+/* =========================================================
+   CATEGORY DETECTION
+   ========================================================= */
+
+function getCategory(version) {
+
+    const v =
+        version.trim().toLowerCase();
+
+    const customClientNames = [
+        &quot;client&quot;,
+        &quot;gx-&quot;,
+        &quot;eb client&quot;,
+        &quot;areo client&quot;,
+        &quot;myven&quot;,
+        &quot;precision&quot;,
+        &quot;huzzium&quot;,
+        &quot;reflex&quot;,
+        &quot;kozmo&quot;,
+        &quot;tuff client&quot;,
+        &quot;eclipse&quot;,
+        &quot;pixel client&quot;,
+        &quot;efi&quot;,
+        &quot;astra&quot;,
+        &quot;resent&quot;,
+        &quot;eaglerforge&quot;,
+        &quot;larp&quot;,
+        &quot;forge&quot;,
+        &quot;modern client&quot;,
+        &quot;broken script&quot;,
+        &quot;shadow network&quot;
+    ];
+
+    if (
+        customClientNames.some(
+            name =&gt; v.includes(name)
+        )
+    ) {
+        return &quot;custom&quot;;
+    }
+
+    if (
+        v.startsWith(&quot;pre-classic&quot;)
+    ) {
+        return &quot;preclassic&quot;;
+    }
+
+    if (
+        v.startsWith(&quot;classic&quot;)
+    ) {
+        return &quot;classic&quot;;
+    }
+
+    if (
+        v.startsWith(&quot;alpha&quot;) ||
+        v.startsWith(&quot;infdev&quot;) ||
+        v.startsWith(&quot;indev&quot;)
+    ) {
+        return &quot;alpha&quot;;
+    }
+
+    if (
+        v.startsWith(&quot;beta&quot;)
+    ) {
+        return &quot;beta&quot;;
+    }
+
+    if (
+        /^\d+\.\d+/.test(v) ||
+        /^\d+$/.test(v) ||
+        v === &quot;4k&quot;
+    ) {
+        return &quot;release&quot;;
+    }
+
+    return &quot;release&quot;;
+}
+
+
+/* =========================================================
+   DISPLAY NAME
+   ========================================================= */
+
+function displayVersionName(version) {
+
+    if (
+        version
+            .toLowerCase()
+            .endsWith(&quot;-wasm&quot;)
+    ) {
+        return version.slice(0, -5);
+    }
+
+    return version;
+}
+
+
+/* =========================================================
+   WASM
+   ========================================================= */
+
+function isWasm(version) {
+    return version
+        .toLowerCase()
+        .endsWith(&quot;-wasm&quot;);
+}
+
+
+/* =========================================================
+   FILE TYPE
+   ========================================================= */
+
+function getFileType(version) {
+
+    const v =
+        version.toLowerCase();
+
+    const zipVersions = [
+        &quot;1.5.2&quot;,
+        &quot;beta 1.4&quot;,
+        &quot;beta 1.2&quot;,
+        &quot;beta 1.0&quot;,
+        &quot;eaglerforge&quot;,
+        &quot;modern client&quot;
+    ];
+
+    if (
+        zipVersions.some(
+            item =&gt; v.includes(item)
+        )
+    ) {
+        return &quot;ZIP&quot;;
+    }
+
+    return &quot;HTML&quot;;
+}
+
+
+/* =========================================================
+   VERSION.TXT
+   ========================================================= */
+
+async function fetchVersionList() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${VERSION_URL}?t=${Date.now()}`,
+                {
+                    cache: &quot;no-store&quot;
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
+
+        const text =
+            await response.text();
+
+        const parsed =
+            cleanVersionList(text);
+
+        if (!parsed.length) {
+            throw new Error(
+                &quot;version.txt is empty&quot;
+            );
+        }
+
+        return parsed;
+
+    } catch (error) {
+
+        console.warn(
+            &quot;version.txt failed:&quot;,
+            error
+        );
+
+        return [
+            ...FALLBACK_VERSIONS
+        ];
+    }
+}
+
+
+/* =========================================================
+   INDEXED DB
+   ========================================================= */
+
+const DB_NAME =
+    &quot;mc-version-cache&quot;;
+
+const DB_VERSION =
+    1;
+
+const STORE_NAME =
+    &quot;versions&quot;;
+
+let dbPromise = null;
+
+function openDatabase() {
+
+    if (dbPromise) {
+        return dbPromise;
+    }
+
+    dbPromise =
+        new Promise(
+            (resolve, reject) =&gt; {
+
+                const request =
+                    indexedDB.open(
+                        DB_NAME,
+                        DB_VERSION
+                    );
+
+                request.onupgradeneeded =
+                    event =&gt; {
+
+                        const db =
+                            event.target.result;
+
+                        if (
+                            !db.objectStoreNames.contains(
+                                STORE_NAME
+                            )
+                        ) {
+
+                            db.createObjectStore(
+                                STORE_NAME
+                            );
+                        }
+                    };
+
+                request.onsuccess =
+                    event =&gt; {
+                        resolve(
+                            event.target.result
+                        );
+                    };
+
+                request.onerror =
+                    () =&gt; {
+                        reject(
+                            request.error
+                        );
+                    };
+            }
+        );
+
+    return dbPromise;
+}
+
+
+async function getCachedVersion(version) {
+
+    try {
+
+        const db =
+            await openDatabase();
+
+        return await new Promise(
+            (resolve, reject) =&gt; {
+
+                const transaction =
+                    db.transaction(
+                        STORE_NAME,
+                        &quot;readonly&quot;
+                    );
+
+                const store =
+                    transaction.objectStore(
+                        STORE_NAME
+                    );
+
+                const request =
+                    store.get(version);
+
+                request.onsuccess =
+                    () =&gt; {
+                        resolve(
+                            request.result || null
+                        );
+                    };
+
+                request.onerror =
+                    () =&gt; {
+                        reject(
+                            request.error
+                        );
+                    };
+            }
+        );
+
+    } catch (error) {
+
+        console.warn(
+            &quot;IndexedDB read failed:&quot;,
+            error
+        );
+
+        return null;
+    }
+}
+
+
+async function cacheVersion(
+    version,
+    html
+) {
+
+    try {
+
+        const db =
+            await openDatabase();
+
+        await new Promise(
+            (resolve, reject) =&gt; {
+
+                const transaction =
+                    db.transaction(
+                        STORE_NAME,
+                        &quot;readwrite&quot;
+                    );
+
+                const store =
+                    transaction.objectStore(
+                        STORE_NAME
+                    );
+
+                const request =
+                    store.put(
+                        html,
+                        version
+                    );
+
+                request.onsuccess =
+                    resolve;
+
+                request.onerror =
+                    () =&gt; {
+                        reject(
+                            request.error
+                        );
+                    };
+            }
+        );
+
+    } catch (error) {
+
+        console.warn(
+            &quot;IndexedDB write failed:&quot;,
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   MULTI-PART GAME FETCHER
+   ========================================================= */
+
+async function fetchGameHTML(version) {
+
+    const encoded =
+        encodeURIComponent(version);
+
+    const base =
+        `${CDN_BASE}/game/${encoded}`;
+
+    const urls = [
+        `${base}/index.part1.html`,
+        `${base}/index.part2.html`,
+        `${base}/index.part3.html`,
+        `${base}/index.part4.html`,
+        `${base}/index.html`
+    ];
+
+    const responses =
+        await Promise.all(
+            urls.map(
+                async url =&gt; {
+
+                    try {
+
+                        const response =
+                            await fetch(
+                                url,
+                                {
+                                    cache:
+                                        &quot;no-cache&quot;
+                                }
+                            );
+
+                        if (!response.ok) {
+                            return null;
+                        }
+
+                        return await response.text();
+
+                    } catch {
+                        return null;
+                    }
+                }
+            )
+        );
+
+    const parts =
+        responses.slice(0, 4);
+
+    if (
+        parts.some(
+            part =&gt; part !== null
+        )
+    ) {
+
+        const contiguous = [];
+
+        for (
+            let i = 0;
+            i &lt; parts.length;
+            i++
+        ) {
+
+            if (
+                parts[i] === null
+            ) {
+                break;
+            }
+
+            contiguous.push(
+                parts[i]
+            );
+        }
+
+        if (contiguous.length) {
+            return contiguous.join(&quot;&quot;);
+        }
+    }
+
+    if (responses[4] !== null) {
+        return responses[4];
+    }
+
+    throw new Error(
+        `No playable files found for ${version}`
+    );
+}
+
+
+/* =========================================================
+   CACHE-FIRST LOADING
+   ========================================================= */
+
+async function getGameHTML(version) {
+
+    const cached =
+        await getCachedVersion(version);
+
+    if (cached) {
+
+        setStatus(
+            `${version} • local cache`,
+            &quot;success&quot;
+        );
+
+        return cached;
+    }
+
+    setStatus(
+        `${version} • downloading...`
+    );
+
+    const html =
+        await fetchGameHTML(version);
+
+    await cacheVersion(
+        version,
+        html
+    );
+
+    setStatus(
+        `${version} • cached`,
+        &quot;success&quot;
+    );
+
+    return html;
+}
+
+
+/* =========================================================
+   INLINE PLAY
+   ========================================================= */
+
+async function playInline(version) {
+
+    try {
+
+        const html =
+            await getGameHTML(version);
+
+        document.open();
+
+        document.write(html);
+
+        document.close();
+
+    } catch (error) {
+
+        console.error(error);
+
+        setStatus(
+            `Failed to load ${version}`,
+            &quot;error&quot;
+        );
+
+        alert(
+            `Could not load ${version}.\n\n${error.message}`
+        );
+    }
+}
+
+
+/* =========================================================
+   ABOUT:BLANK
+   ========================================================= */
+
+async function playAboutBlank(version) {
+
+    const win =
+        window.open(
+            &quot;&quot;,
+            &quot;_blank&quot;
+        );
+
+    if (!win) {
+
+        alert(
+            &quot;Popup blocked. Allow popups for this launcher.&quot;
+        );
+
+        return;
+    }
+
+    win.document.open();
+
+    win.document.write(`
+        &lt;!DOCTYPE html&gt;
+        &lt;html&gt;
+        &lt;head&gt;
+            &lt;title&gt;
+                Loading ${escapeHTML(version)}
+            &lt;/title&gt;
+
+            &lt;style&gt;
+                html,body {
+                    margin:0;
+                    width:100%;
+                    height:100%;
+                    background:#111;
+                    color:#ddd;
+                    font-family:Arial,sans-serif;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                }
+            &lt;/style&gt;
+        &lt;/head&gt;
+
+        &lt;body&gt;
+            Loading ${escapeHTML(version)}...
+        &lt;/body&gt;
+        &lt;/html&gt;
+    `);
+
+    win.document.close();
+
+    try {
+
+        const html =
+            await getGameHTML(version);
+
+        win.document.open();
+
+        win.document.write(html);
+
+        win.document.close();
+
+    } catch (error) {
+
+        console.error(error);
+
+        try {
+
+            win.document.open();
+
+            win.document.write(`
+                &lt;!DOCTYPE html&gt;
+                &lt;html&gt;
+                &lt;body style=&quot;
+                    background:#111;
+                    color:#ddd;
+                    font-family:Arial;
+                    padding:30px;
+                &quot;&gt;
+                    &lt;h2&gt;Failed to load game&lt;/h2&gt;
+                    &lt;p&gt;
+                        ${escapeHTML(error.message)}
+                    &lt;/p&gt;
+                &lt;/body&gt;
+                &lt;/html&gt;
+            `);
+
+            win.document.close();
+
+        } catch {}
+
+        setStatus(
+            `Failed to load ${version}`,
+            &quot;error&quot;
+        );
+    }
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replaceAll(&quot;&amp;&quot;, &quot;&amp;amp;&quot;)
+        .replaceAll(&quot;&lt;&quot;, &quot;&amp;lt;&quot;)
+        .replaceAll(&quot;&gt;&quot;, &quot;&amp;gt;&quot;)
+        .replaceAll('&quot;', &quot;&amp;quot;&quot;)
+        .replaceAll(&quot;'&quot;, &quot;&amp;#039;&quot;);
+}
+
+
+/* =========================================================
+   VERSION ROW
+   ========================================================= */
+
+function createVersionRow(version) {
+
+    const row =
+        document.createElement(&quot;div&quot;);
+
+    row.className =
+        &quot;version-row&quot;;
+
+
+    const info =
+        document.createElement(&quot;div&quot;);
+
+    info.className =
+        &quot;version-info&quot;;
+
+
+    const name =
+        document.createElement(&quot;div&quot;);
+
+    name.className =
+        &quot;version-name&quot;;
+
+    name.textContent =
+        displayVersionName(version);
+
+
+    const meta =
+        document.createElement(&quot;div&quot;);
+
+    meta.className =
+        &quot;version-meta&quot;;
+
+
+    if (isWasm(version)) {
+
+        const wasm =
+            document.createElement(&quot;span&quot;);
+
+        wasm.className =
+            &quot;meta wasm&quot;;
+
+        wasm.textContent =
+            &quot;WASM&quot;;
+
+        meta.appendChild(wasm);
+    }
+
+
+    const type =
+        document.createElement(&quot;span&quot;);
+
+    const fileType =
+        getFileType(version);
+
+    type.className =
+        `meta ${fileType.toLowerCase()}`;
+
+    type.textContent =
+        fileType;
+
+    meta.appendChild(type);
+
+
+    const get =
+        document.createElement(&quot;span&quot;);
+
+    get.className =
+        &quot;meta get&quot;;
+
+    get.textContent =
+        &quot;GET&quot;;
+
+    meta.appendChild(get);
+
+
+    info.appendChild(name);
+    info.appendChild(meta);
+
+
+    const actions =
+        document.createElement(&quot;div&quot;);
+
+    actions.className =
+        &quot;actions&quot;;
+
+
+    const play =
+        document.createElement(&quot;button&quot;);
+
+    play.className =
+        &quot;play-btn&quot;;
+
+    play.textContent =
+        &quot;play →&quot;;
+
+    play.addEventListener(
+        &quot;click&quot;,
+        () =&gt; playInline(version)
+    );
+
+
+    const blank =
+        document.createElement(&quot;button&quot;);
+
+    blank.className =
+        &quot;blank-btn&quot;;
+
+    blank.textContent =
+        &quot;about:blank ↗&quot;;
+
+    blank.addEventListener(
+        &quot;click&quot;,
+        () =&gt; playAboutBlank(version)
+    );
+
+
+    actions.appendChild(play);
+    actions.appendChild(blank);
+
+
+    row.appendChild(info);
+    row.appendChild(actions);
+
+    return row;
+}
+
+
+/* =========================================================
+   CATEGORY ORDER
+   ========================================================= */
+
+const CATEGORY_ORDER = [
+    [&quot;release&quot;, &quot;Release&quot;],
+    [&quot;beta&quot;, &quot;Beta&quot;],
+    [&quot;alpha&quot;, &quot;Alpha / Pre-Classic&quot;],
+    [&quot;classic&quot;, &quot;Classic&quot;],
+    [&quot;preclassic&quot;, &quot;Pre-Classic&quot;],
+    [&quot;custom&quot;, &quot;Custom Clients&quot;]
+];
+
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function renderVersions() {
+
+    const search =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+    const selected =
+        filterSelect.value;
+
+    versionList.innerHTML = &quot;&quot;;
+
+
+    const matching =
+        VERSIONS.filter(
+            version =&gt; {
+
+                const matchesSearch =
+                    version
+                        .toLowerCase()
+                        .includes(search);
+
+                const category =
+                    getCategory(version);
+
+                const matchesFilter =
+                    selected === &quot;all&quot; ||
+                    category === selected;
+
+                return (
+                    matchesSearch &amp;&amp;
+                    matchesFilter
+                );
+            }
+        );
+
+
+    if (!matching.length) {
+
+        const empty =
+            document.createElement(&quot;div&quot;);
+
+        empty.className =
+            &quot;empty&quot;;
+
+        empty.textContent =
+            &quot;No matching versions.&quot;;
+
+        versionList.appendChild(
+            empty
+        );
+
+        return;
+    }
+
+
+    /* Selected category */
+
+    if (selected !== &quot;all&quot;) {
+
+        const categoryName =
+            CATEGORY_ORDER.find(
+                item =&gt;
+                    item[0] === selected
+            )?.[1] ||
+            selected;
+
+
+        const header =
+            document.createElement(&quot;div&quot;);
+
+        header.className =
+            &quot;category-header&quot;;
+
+        header.textContent =
+            categoryName;
+
+        versionList.appendChild(
+            header
+        );
+
+
+        for (
+            const version of matching
+        ) {
+
+            versionList.appendChild(
+                createVersionRow(version)
+            );
+        }
+
+        return;
+    }
+
+
+    /* All categories */
+
+    for (
+        const [
+            categoryKey,
+            categoryName
+        ]
+        of CATEGORY_ORDER
+    ) {
+
+        const categoryVersions =
+            matching.filter(
+                version =&gt;
+                    getCategory(version) ===
+                    categoryKey
+            );
+
+
+        if (!categoryVersions.length) {
+            continue;
+        }
+
+
+        const header =
+            document.createElement(&quot;div&quot;);
+
+        header.className =
+            &quot;category-header&quot;;
+
+        header.textContent =
+            categoryName;
+
+        versionList.appendChild(
+            header
+        );
+
+
+        for (
+            const version
+            of categoryVersions
+        ) {
+
+            versionList.appendChild(
+                createVersionRow(version)
+            );
+        }
+    }
+}
+
+
+/* =========================================================
+   SEARCH + FILTER
+   ========================================================= */
+
+searchInput.addEventListener(
+    &quot;input&quot;,
+    renderVersions
+);
+
+filterSelect.addEventListener(
+    &quot;change&quot;,
+    renderVersions
+);
+
+
+/* =========================================================
+   STARTUP
+   ========================================================= */
+
+async function initialize() {
+
+    setStatus(
+        &quot;Fetching live version list...&quot;
+    );
+
+    VERSIONS =
+        await fetchVersionList();
+
+    renderVersions();
+
+    setStatus(
+        `${VERSIONS.length} versions available`,
+        &quot;success&quot;
+    );
+}
+
+initialize();
+
+&lt;/script&gt;
+
+
+
+&lt;/body&gt;&lt;/html&gt;"
+      style="width:100%; height:100%; border:none; margin:0; padding:0; display:block;"
+      allow="gpu; fullscreen; xr-spatial-tracking; clipboard-read; clipboard-write; autoplay; camera; microphone; midi; accelerometer; gyroscope"
+      sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-pointer-lock allow-downloads">
+    </iframe>
+  </foreignObject>
+  <script><![CDATA[
+    (function () {
+      function resize() {
+        var svgEl = document.getElementById('rootSvg');
+        var fo = document.getElementById('fo');
+        var w = window.innerWidth || 1200;
+        var h = window.innerHeight || 283;
+        svgEl.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+        fo.setAttribute('width', w);
+        fo.setAttribute('height', h);
+      }
+      window.addEventListener('resize', resize);
+      if (document.readyState === 'complete') {
+        resize();
+      } else {
+        window.addEventListener('load', resize);
+      }
+    })();
+  ]]></script>
+</svg>
