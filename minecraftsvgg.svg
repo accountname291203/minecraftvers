@@ -1,0 +1,566 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <foreignObject width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="height: 100%; min-height: 100vh;">
+      <style>
+        * {
+          box-sizing: border-box;
+        }
+
+        :root {
+          color-scheme: dark;
+        }
+
+        html, body, div {
+          margin: 0;
+          padding: 0;
+        }
+
+        body, .main-wrapper {
+          min-height: 100vh;
+          color: #e4e0d8;
+          font-family: "Segoe UI", Arial, sans-serif;
+          background-color: #1b1a1a;
+          background-image:
+            radial-gradient(circle at 15% 20%, #232120 0%, transparent 40%),
+            radial-gradient(circle at 80% 10%, #201f1e 0%, transparent 35%),
+            radial-gradient(circle at 60% 70%, #201e1d 0%, transparent 45%),
+            radial-gradient(circle at 25% 85%, #242220 0%, transparent 40%),
+            radial-gradient(circle at 90% 60%, #1f1e1d 0%, transparent 40%);
+          overflow-x: hidden;
+        }
+
+        .menu {
+          max-width: 900px;
+          margin: 0 auto;
+          padding: 8vh 40px 60px;
+          text-align: left;
+        }
+
+        .title {
+          margin: 0 0 44px;
+          font-family: Georgia, "Times New Roman", serif;
+          font-weight: 700;
+          font-size: clamp(40px, 8vw, 84px);
+          letter-spacing: 1px;
+          color: #8a8378;
+          text-shadow:
+            0 2px 0 #100f0e,
+            0 -1px 0 #a39a8c;
+        }
+
+        .search-wrap {
+          max-width: 560px;
+        }
+
+        .search-label {
+          display: block;
+          font-weight: 700;
+          font-size: 15px;
+          margin-bottom: 10px;
+          color: #efece4;
+        }
+
+        #search {
+          width: 100%;
+          border: none;
+          border-bottom: 1px solid #4a463f;
+          background: transparent;
+          color: #cfcabf;
+          font-size: 15px;
+          padding: 6px 2px 10px;
+          outline: none;
+        }
+
+        #search::placeholder {
+          color: #7d786d;
+        }
+
+        #search:focus {
+          border-bottom-color: #cfcabf;
+        }
+
+        .version-list {
+          margin-top: 28px;
+          border-top: 1px solid #3a362f;
+          max-height: 52vh;
+          overflow-y: auto;
+        }
+
+        .version-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          padding: 17px 2px;
+          border-bottom: 1px solid #3a362f;
+        }
+
+        .version-name {
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 21px;
+          color: #efece4;
+        }
+
+        .row-actions {
+          display: flex;
+          align-items: center;
+          gap: 22px;
+          font-size: 13px;
+          color: #8a8378;
+          white-space: nowrap;
+        }
+
+        .tag {
+          letter-spacing: .04em;
+        }
+
+        .action {
+          appearance: none;
+          border: none;
+          background: none;
+          font-family: inherit;
+          color: #c9c4b8;
+          cursor: pointer;
+          font-size: 13px;
+          padding: 4px 2px;
+        }
+
+        .action:hover,
+        .action:focus-visible {
+          color: #ffffff;
+          outline: none;
+        }
+
+        .action:disabled {
+          opacity: .5;
+          cursor: wait;
+        }
+
+        .empty {
+          padding: 24px 2px;
+          color: #8a8378;
+          font-size: 15px;
+        }
+
+        #status {
+          margin-top: 22px;
+          min-height: 18px;
+          color: #a39a8c;
+          font-size: 13px;
+        }
+
+        .popout-banner {
+          display: none;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          background: #2a2622;
+          border-bottom: 1px solid #4a463f;
+          padding: 12px 24px;
+          font-size: 13px;
+          color: #efece4;
+        }
+
+        .popout-banner.show {
+          display: flex;
+        }
+
+        .popout-banner button {
+          appearance: none;
+          border: 1px solid #6b665a;
+          background: transparent;
+          color: #ffffff;
+          font-family: inherit;
+          font-size: 13px;
+          font-weight: 700;
+          padding: 7px 14px;
+          border-radius: 4px;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+
+        .popout-banner button:hover {
+          background: #ffffff14;
+        }
+
+        #gameFrame {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          border: none;
+          z-index: 99999;
+          background: #000;
+        }
+      </style>
+
+      <iframe id="gameFrame"></iframe>
+
+      <div class="main-wrapper" id="mainApp">
+        <div id="popoutBanner" class="popout-banner">
+          <span>This page is embedded and may not be able to reach the network for versions. Open it in its own tab to fix that.</span>
+          <button type="button" id="popoutBtn">Open in new tab &#8599;</button>
+        </div>
+
+        <div class="menu">
+          <h1 class="title">MINECRAFT</h1>
+
+          <div class="search-wrap">
+            <span class="search-label">search</span>
+            <input id="search" type="text" placeholder="Filter versions..." autocomplete="off" spellcheck="false" />
+          </div>
+
+          <div id="versionList" class="version-list"></div>
+
+          <div id="status"></div>
+        </div>
+      </div>
+
+      <script type="text/javascript">
+      <![CDATA[
+        const FALLBACK_VERSIONS = [
+          "1.0", "1.1", "1.12.2-wasm", "1.12.2", "1.13.2-wasm", "1.13.2",
+          "1.14.4-wasm", "1.14.4", "1.16.5-wasm", "1.16.5", "1.17.1-wasm",
+          "1.2.3-wasm", "1.2.3", "1.2.5-wasm", "1.2.5", "1.20.6-wasm",
+          "1.21.11-wasm", "1.3.2-wasm", "1.4.7-wasm", "1.4.7", "1.5.2",
+          "1.6.4", "1.7.10-wasm", "1.7.10", "1.8.8-wasm", "1.8.8",
+          "26.1.2-wasm", "26.2-wasm", "4k", "Aero Client", "Astra Client 2-1.8.8",
+          "Astra Client", "EB Client 1.14.4", "EB Client 1.8.8", "EB Client",
+          "Eaglerforge", "Eclipse Client", "Forge 1.6.4", "GX-Client",
+          "Huzzium Client", "Kozmo Client", "Larp Client 1.12.2",
+          "Larp Client 1.14.4", "Modern Client", "Myven Client", "Pixel Client",
+          "Precision Client", "Reflex Client", "Resent Client", "Shadow Network",
+          "The Broken Script 1.8.8", "Tuff Client Beta", "Tuff Client",
+          "alpha-1.0.16_02-wasm", "alpha-1.0.1_01", "alpha-1.0.4", "alpha-1.0.6_03",
+          "alpha-1.1.2_01", "alpha-1.2.6", "beta-1.0.2", "beta-1.0", "beta-1.1",
+          "beta-1.2", "beta-1.3-wasm", "beta-1.3", "beta-1.4", "beta-1.5",
+          "beta-1.6.4", "beta-1.7.3", "beta-1.8.1-wasm", "beta-1.8.1",
+          "beta-1.9-wasm", "beta-1.9", "classic-0.0.11a-wasm",
+          "classic-0.0.12a-03-wasm", "classic-0.0.13a-03-wasm",
+          "classic-0.0.14a-08-wasm", "classic-0.0.15a-wasm",
+          "classic-0.0.16a-02-wasm", "classic-0.0.17a-wasm",
+          "classic-0.0.18a-02-wasm", "classic-0.0.19a-06-wasm",
+          "classic-0.0.20a-02-wasm", "classic-0.0.21a-wasm",
+          "classic-0.0.22a-05-wasm", "classic-0.0.23a-01-wasm",
+          "classic-0.0.24a-03-wasm", "classic-0.0.25a-05-wasm",
+          "classic-0.3.0-wasm", "efi-1.12.2", "efi-1.8.8",
+          "indev-20100219-wasm", "indev-20100223-wasm", "indev", "infdev-wasm",
+          "pre-classic-rd-131655-wasm", "pre-classic-rd-132211-wasm",
+          "pre-classic-rd-132328-wasm", "pre-classic-rd-160052-wasm",
+          "pre-classic-rd-161348-wasm"
+        ];
+
+        let VERSIONS = FALLBACK_VERSIONS;
+
+        const search = document.getElementById("search");
+        const versionList = document.getElementById("versionList");
+        const status = document.getElementById("status");
+        const popoutBanner = document.getElementById("popoutBanner");
+        const popoutBtn = document.getElementById("popoutBtn");
+        const gameFrame = document.getElementById("gameFrame");
+        const mainApp = document.getElementById("mainApp");
+
+        let inIframe;
+        try {
+          inIframe = window.self !== window.top;
+        } catch {
+          inIframe = true;
+        }
+
+        function openSelfInNewTab() {
+          try {
+            const blob = new Blob([document.documentElement.outerHTML], { type: "text/html" });
+            const url = URL.createObjectURL(blob);
+            const win = window.open(url, "_blank");
+            if (!win) {
+              status.textContent = "Popup blocked — allow popups for this page, then try again.";
+            }
+          } catch (error) {
+            status.textContent = "Could not open in a new tab: " + error.message;
+          }
+        }
+
+        if (inIframe) {
+          popoutBanner.classList.add("show");
+        }
+        popoutBtn.addEventListener("click", openSelfInNewTab);
+
+        let playing = false;
+
+        function isWasm(version) {
+          return version.toLowerCase().endsWith("-wasm");
+        }
+
+        function renderList() {
+          const query = search.value.trim().toLowerCase();
+
+          const matches = query
+            ? VERSIONS.filter(v => v.toLowerCase().includes(query))
+            : VERSIONS;
+
+          versionList.innerHTML = "";
+
+          if (!matches.length) {
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "No versions match \u201c" + search.value + "\u201d.";
+            versionList.appendChild(empty);
+            return;
+          }
+
+          for (const version of matches) {
+            const row = document.createElement("div");
+            row.className = "version-row";
+
+            const name = document.createElement("span");
+            name.className = "version-name";
+            name.textContent = version;
+
+            const actions = document.createElement("div");
+            actions.className = "row-actions";
+
+            if (isWasm(version)) {
+              const tag = document.createElement("span");
+              tag.className = "tag";
+              tag.textContent = "WASM";
+              actions.appendChild(tag);
+            }
+
+            const playBtn = document.createElement("button");
+            playBtn.type = "button";
+            playBtn.className = "action";
+            playBtn.textContent = "play \u2192";
+            playBtn.disabled = playing;
+            playBtn.addEventListener("click", () => playInline(version, playBtn));
+
+            const blankBtn = document.createElement("button");
+            blankBtn.type = "button";
+            blankBtn.className = "action";
+            blankBtn.textContent = "about:blank \u2197";
+            blankBtn.addEventListener("click", () => openInBlank(version, blankBtn));
+
+            actions.appendChild(playBtn);
+            actions.appendChild(blankBtn);
+
+            row.appendChild(name);
+            row.appendChild(actions);
+            versionList.appendChild(row);
+          }
+        }
+
+        search.addEventListener("input", renderList);
+
+        function versionListURL() {
+          return "https://cdn.jsdelivr.net/gh/accountname291203/minecraftvers@main/version.txt";
+        }
+
+        async function fetchVersionList() {
+          const response = await fetch(versionListURL(), { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error("version.txt request failed (" + response.status + ")");
+          }
+          const text = await response.text();
+          return text
+            .split("\n")
+            .map(line => line.trim())
+            .filter(line => line.length && !line.startsWith("#"));
+        }
+
+        async function initVersionList() {
+          versionList.innerHTML = "";
+          const loading = document.createElement("div");
+          loading.className = "empty";
+          loading.textContent = "Loading versions...";
+          versionList.appendChild(loading);
+
+          try {
+            const live = await fetchVersionList();
+            if (live.length) {
+              VERSIONS = live;
+            } else {
+              status.textContent = "version.txt was empty — using the bundled list.";
+            }
+          } catch (error) {
+            status.textContent = inIframe
+              ? "Couldn't load version.txt (" + error.message + ") — this page is embedded; click \u201cOpen in new tab\u201d above, then try again."
+              : "Couldn't load version.txt (" + error.message + ") — using the bundled list.";
+          }
+
+          renderList();
+        }
+
+        initVersionList();
+
+        async function playInline(version, button) {
+          if (playing) return;
+
+          playing = true;
+          button.disabled = true;
+          const original = button.textContent;
+          button.textContent = "loading...";
+          status.textContent = "";
+
+          try {
+            const html = await loadVersion(version);
+            const blob = new Blob([html], { type: "text/html" });
+            const blobUrl = URL.createObjectURL(blob);
+            
+            gameFrame.src = blobUrl;
+            gameFrame.style.display = "block";
+            mainApp.style.display = "none";
+          } catch (error) {
+            status.textContent = inIframe
+              ? "Error: " + error.message + " — this page is embedded; click \u201cOpen in new tab\u201d above, then try again."
+              : "Error: " + error.message;
+            playing = false;
+            button.disabled = false;
+            button.textContent = original;
+          }
+        }
+
+        async function openInBlank(version, button) {
+          if (button.disabled) return;
+
+          button.disabled = true;
+          const original = button.textContent;
+          button.textContent = "opening...";
+          status.textContent = "";
+
+          try {
+            const html = await loadVersion(version);
+            const win = window.open("about:blank", "_blank");
+            if (!win) {
+              throw new Error("Popup blocked — allow popups for this page.");
+            }
+            win.document.open();
+            win.document.write(html);
+            win.document.close();
+          } catch (error) {
+            status.textContent = "Error: " + error.message;
+          } finally {
+            button.disabled = false;
+            button.textContent = original;
+          }
+        }
+
+        function encodePath(name) {
+          return name.split("/").map(part => encodeURIComponent(part)).join("/");
+        }
+
+        function partURL(version, part) {
+          return "https://cdn.jsdelivr.net/gh/accountname291203/minecraftvers@main/game/" + encodePath(version) + "/index.part" + part + ".html";
+        }
+
+        function plainURL(version) {
+          return "https://cdn.jsdelivr.net/gh/accountname291203/minecraftvers@main/game/" + encodePath(version) + "/index.html";
+        }
+
+        const DB_NAME = "mc-version-cache";
+        const STORE_NAME = "versions";
+        let dbPromise = null;
+
+        function openDB() {
+          if (dbPromise) return dbPromise;
+          dbPromise = new Promise((resolve, reject) => {
+            try {
+              const request = indexedDB.open(DB_NAME, 1);
+              request.onupgradeneeded = () => {
+                const db = request.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                  db.createObjectStore(STORE_NAME);
+                }
+              };
+              request.onsuccess = () => resolve(request.result);
+              request.onerror = () => reject(request.error);
+            } catch (error) {
+              reject(error);
+            }
+          });
+          return dbPromise;
+        }
+
+        async function getCached(version) {
+          try {
+            const db = await openDB();
+            return await new Promise((resolve, reject) => {
+              const tx = db.transaction(STORE_NAME, "readonly");
+              const req = tx.objectStore(STORE_NAME).get(version);
+              req.onsuccess = () => resolve(req.result || null);
+              req.onerror = () => reject(req.error);
+            });
+          } catch {
+            return null;
+          }
+        }
+
+        async function setCached(version, html) {
+          try {
+            const db = await openDB();
+            await new Promise((resolve, reject) => {
+              const tx = db.transaction(STORE_NAME, "readwrite");
+              tx.objectStore(STORE_NAME).put(html, version);
+              tx.oncomplete = () => resolve();
+              tx.onerror = () => reject(tx.error);
+            });
+          } catch {}
+        }
+
+        async function fetchPart(url) {
+          try {
+            const response = await fetch(url, { cache: "no-store" });
+            if (!response.ok) return { ok: false };
+            return { ok: true, text: await response.text() };
+          } catch {
+            return { ok: false };
+          }
+        }
+
+        async function loadVersion(version) {
+          status.textContent = "Checking cache...";
+          const cached = await getCached(version);
+          if (cached) {
+            status.textContent = "Loaded from cache.";
+            return cached;
+          }
+
+          status.textContent = "Fetching " + version + "...";
+
+          const urls = [
+            partURL(version, 1),
+            partURL(version, 2),
+            partURL(version, 3),
+            partURL(version, 4)
+          ];
+
+          const [results, plain] = await Promise.all([
+            Promise.all(urls.map(fetchPart)),
+            fetchPart(plainURL(version))
+          ]);
+
+          let combined;
+
+          if (results[0].ok) {
+            const parts = [];
+            for (const result of results) {
+              if (!result.ok) break;
+              parts.push(result.text);
+            }
+            status.textContent = "Loaded " + parts.length + " part" + (parts.length === 1 ? "" : "s") + ".";
+            combined = parts.join("");
+          } else if (plain.ok) {
+            status.textContent = "Loaded index.html.";
+            combined = plain.text;
+          } else {
+            throw new Error("No index.part1.html or index.html found for " + version);
+          }
+
+          await setCached(version, combined);
+          return combined;
+        }
+      ]]>
+      </script>
+    </div>
+  </foreignObject>
+</svg>
