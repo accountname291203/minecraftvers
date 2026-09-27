@@ -26,6 +26,7 @@
 1.8.8
 26.1.2-wasm
 26.2-wasm
+26.2-wispcraft
 4k
 Aero Client
 Astra Client 2-1.8.8
